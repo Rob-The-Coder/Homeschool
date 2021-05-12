@@ -1,0 +1,62 @@
+/***********************************************/
+/*      FOGLIO CSS UTILIZZATO PRINCIPALMENTE   */
+/*      PER LA GESTIONE DELLE ANIMAZIONI       */
+/*      DEI DROPDOWN MENU                      */
+/***********************************************/
+svg#rotella.show{
+  transition: -webkit-transform 0.6s;
+  transform: rotate(-90deg) translateZ(0);
+}
+svg#rotella{
+  transition: -webkit-transform 0.6s;
+  transform: rotate(90deg) translateZ(0);
+}
+#DropdownImpostazioni.show{
+  animation-name: DropdownImpostazioni;
+  animation-duration: 400ms;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: forwards;
+}
+#DropdownUtente.show{
+  animation-name: DropdownUtente;
+  animation-duration: 400ms;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: forwards;
+}
+/***********************************************/
+/*      MEDIA QUERIES PER LA GESTIONE DELLA    */
+/*      VISIONE SUI DISPOSITIVI MOBILI         */
+/***********************************************/
+@media(max-width: 768px){
+  #DropdownImpostazioni.show{
+    animation-name: DropdownImpostazioniResponsive!important;
+    animation-duration: 400ms;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
+  }
+  #DropdownUtente.show{
+    animation-name: DropdownUtenteResponsive!important;
+    animation-duration: 400ms;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
+  }
+}
+/***********************************************/
+/*         KEYFRAMES PER LE ANIMAZIONI         */
+/***********************************************/
+@keyframes DropdownImpostazioni{
+  0%{opacity: 0; transform: translate(-120px, 40px);}
+  100%{opacity: 1; transform: translate(-250px, 10px);}
+}
+@keyframes DropdownImpostazioniResponsive{
+  0%{ opacity: 0; transform: translate(-140px, 40px);}
+  100%{ opacity: 1; transform: translate(-145px, 10px);}
+}
+@keyframes DropdownUtente{
+  0%{opacity: 0; transform: translate(-19px, 30px);}
+  100%{opacity: 1; transform: translate(-19px, 8px);}
+}
+@keyframes DropdownUtenteResponsive{
+  0%{opacity: 0; transform: translate(-50px, 30px);}
+  100%{opacity: 1; transform: translate(-50px, 8px);}
+}

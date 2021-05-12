@@ -1,0 +1,78 @@
+.tema-chiaro{
+  --ElementsNavbarBackgroundColor: #fcfcfc;
+  --CardTextColor: black;
+  --DomandaBackgroundColor: #f8f9fa;
+  --DomandaBackgroundColorFocus: #f1f3f4;
+}
+.tema-scuro{
+  --ElementsNavbarBackgroundColor: #1f1f1f;
+  --CardTextColor: white;
+  --DomandaBackgroundColor: #1b1e1f;
+  --DomandaBackgroundColorFocus: #1F2223;
+}
+/***********************************************/
+/*           NAVBAR DEI COMPONENTI             */
+/***********************************************/
+#Elements-navbar{
+  min-height: 50px;
+  background-color: var(--ElementsNavbarBackgroundColor);
+}
+nav#Elements-navbar{
+  padding-left: 9.6vw!important;
+  padding-right: 9.4vw!important;
+  background-color: var(--ElementsNavbarBackgroundColor);
+}
+#Elements-navbar p{
+  color: var(--NavbarTextColor);
+  margin-bottom: 0px;
+}
+#Elements-navbar a{
+  padding-left: 0px;
+}
+/***********************************************/
+/*          STILE DashboardQuestionari         */
+/***********************************************/
+.card .card-body, .card .card-footer{
+  background-color: var(--CardBackgroundColor);
+}
+.TestoNormale, .card-text{
+  color: var(--CardTextColor);
+  margin-bottom: 0px;
+}
+/***********************************************/
+/*            STILE Container            */
+/***********************************************/
+.container-fluid.ContenutoPagina-Q{
+  margin-top: 16px;
+  padding-left: 24vw !important;
+  padding-right: 24vw !important;
+}
+/***********************************************/
+/*                  STILE HTML                 */
+/***********************************************/
+p{
+  color: var(--CardTextColor);
+}
+.modal-content{
+  background-color: var(--CardBackgroundColor);
+}
+.medicina{
+  font-size: smaller;
+}
+.impostazioni{
+  border-radius: 50px;
+}
+input[type=password], input[type=text]{
+  height: 48px;
+  padding: 10px 12px 10px;
+}
+/***********************************************/
+/*                MEDIA QUERIES                */
+/***********************************************/
+@media (max-width: 768px){
+  /* Navbar */
+  nav#Elements-navbar{
+    padding-left: 0px!important;
+    padding-right: 0px!important;
+  }
+}

@@ -1,0 +1,34 @@
+.tema-chiaro{
+  --LoadingBarTextColor: black;
+}
+.tema-scuro{
+  --LoadingBarTextColor: white;
+}
+.ldBar {
+  position: relative;
+}
+.ldBar.label-center > .ldBar-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  text-shadow: none;
+}
+.ldBar-label:after {
+  content: "%";
+  display: inline;
+}
+.ldBar-label {
+	color: var(--LoadingBarTextColor);
+  font-family: 'consolas';
+  font-size: 1.5em;
+  font-weight: 900;
+}
+.ldBar path.mainline {
+  stroke-width: 7;
+  stroke: #a2ff70;
+}
+.ldBar.no-percent .ldBar-label:after {
+  content: "";
+}

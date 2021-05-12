@@ -1,0 +1,125 @@
+.tema-chiaro{
+  --ElementsNavbarBackgroundColor: #fcfcfc;
+  --CardTextColor: black;
+  --DomandaBackgroundColor: #f8f9fa;
+  --DomandaBackgroundColorFocus: #f1f3f4;
+}
+.tema-scuro{
+  --ElementsNavbarBackgroundColor: #1f1f1f;
+  --CardTextColor: white;
+  --DomandaBackgroundColor: #1b1e1f;
+  --DomandaBackgroundColorFocus: #1F2223;
+}
+/***********************************************/
+/*           NAVBAR DEI COMPONENTI             */
+/***********************************************/
+#Elements-navbar{
+  min-height: 50px;
+  background-color: var(--ElementsNavbarBackgroundColor);
+}
+nav#Elements-navbar{
+  padding-left: 9.6vw!important;
+  padding-right: 9.4vw!important;
+  background-color: var(--ElementsNavbarBackgroundColor);
+}
+#Elements-navbar p{
+  color: var(--NavbarTextColor);
+  margin-bottom: 0px;
+}
+#Elements-navbar a{
+  padding-left: 0px;
+}
+/***********************************************/
+/*          STILE DashboardQuestionari         */
+/***********************************************/
+.card .card-body, .card .card-footer{
+  background-color: var(--CardBackgroundColor);
+}
+.TestoNormale, .card-text{
+  color: var(--CardTextColor);
+  margin-bottom: 0px;
+}
+/***********************************************/
+/*            STILE CreaQuestionari            */
+/***********************************************/
+.container-fluid.ContenutoPagina-Q{
+  margin-top: 16px;
+  padding-left: 24vw !important;
+  padding-right: 24vw !important;
+}
+/***********************************************/
+/*                  STILE HTML                 */
+/***********************************************/
+p{
+  color: var(--CardTextColor);
+}
+/***********************************************/
+/*                 STILE INPUT                 */
+/***********************************************/
+input[type=text]{
+  background-color: var(--CardBackgroundColor);
+  color: var(--CardTextColor);
+  width: 100%;
+  padding: 10px 0px;
+  border: none;
+  border-bottom: 2px solid #aaaaaa;
+  transition: border-bottom 500ms ease-in-out;
+}
+input[type=text]:focus{
+  outline: none;
+  border-bottom: 2px solid #17a2b8;
+}
+/***********************************************/
+/*                 STILE SELECT                */
+/***********************************************/
+input[type=radio], input[type=checkbox]{
+  width: 15px;
+  height: 15px;
+}
+/***********************************************/
+/*                 STILE TEXTAREA              */
+/***********************************************/
+textarea{
+  background-color: var(--CardBackgroundColor)!important;
+  color: var(--CardTextColor)!important;
+  resize: none; 
+}
+div.input-group-text{
+  color: var(--CardTextColor)!important;
+  background-color: var(--CardBackgroundColor)!important;
+  border: none;
+}
+div.input-group{
+  flex-wrap: nowrap;
+}
+/***********************************************/
+/*                 STILE PULSANTI              */
+/***********************************************/
+.btn-link{
+  color: var(--CardTextColor)!important;
+}
+.floating{
+  transform: translate(-25px, -70px);
+  width:45px;
+	height:45px;
+  background-color:#17a2b8!important;
+  color:#FFF!important;
+  border-radius:50px;
+}
+/***********************************************/
+/*                 STILE LABEL                 */
+/***********************************************/
+label{
+  color: var(--CardTextColor)!important;
+  margin: 0px;
+}
+/***********************************************/
+/*                MEDIA QUERIES                */
+/***********************************************/
+@media (max-width: 768px){
+  /* Navbar */
+  nav#Elements-navbar{
+    padding-left: 0px!important;
+    padding-right: 0px!important;
+  }
+}
