@@ -91,44 +91,44 @@ public class Login extends HttpServlet {
 			    Studenti.add(login.selectStudenti(ClasseMateria.get(i).get(0)));
 			  }//endfor
 			  //Media primo quadrimestre
-        for(int i=0; i<ClasseMateria.size(); i=i+1){
-          VotiQuadrimestre=new ArrayList<String>();
-          for(int j=0; j<Studenti.get(i).size(); j=j+1){
-            String EmailStudente=Studenti.get(i).get(j).getEmail();
-            String PasswordStudente=Studenti.get(i).get(j).getPassword();
-            ArrayList<Integer> Id=login.selectIdQuestionari(EmailStudente, PasswordStudente, ClasseMateria.get(i).get(1), "%",  "2021-02-05");
-            AppMedia=0;
-            for(int k=0; k<Id.size(); k=k+1){
-              AppMedia=AppMedia+login.selectVotoQuestionario(EmailStudente, PasswordStudente, Id.get(k), ClasseMateria.get(i).get(1), "%",  "2021-02-05");
-            }//endfor
-            if(Id.size()!=0) {
-              AppMedia=AppMedia/Id.size();  
-            }//endif
-            VotiQuadrimestre.add(Integer.toString(AppMedia));
-          }//endfor
-          MediaPrimoPeriodo.add(VotiQuadrimestre);
-        }//endfor
+     for(int i=0; i<ClasseMateria.size(); i=i+1){
+       VotiQuadrimestre=new ArrayList<String>();
+       for(int j=0; j<Studenti.get(i).size(); j=j+1){
+         String EmailStudente=Studenti.get(i).get(j).getEmail();
+         String PasswordStudente=Studenti.get(i).get(j).getPassword();
+         ArrayList<Integer> Id=login.selectIdQuestionari(EmailStudente, PasswordStudente, ClasseMateria.get(i).get(1), "%",  "2021-02-05");
+         AppMedia=0;
+         for(int k=0; k<Id.size(); k=k+1){
+           AppMedia=AppMedia+login.selectVotoQuestionario(EmailStudente, PasswordStudente, Id.get(k), ClasseMateria.get(i).get(1), "%",  "2021-02-05");
+         }//endfor
+         if(Id.size()!=0) {
+           AppMedia=AppMedia/Id.size();  
+         }//endif
+         VotiQuadrimestre.add(Integer.toString(AppMedia));
+       }//endfor
+       MediaPrimoPeriodo.add(VotiQuadrimestre);
+     }//endfor
 			  //Media secondo quadrimestre
 			  for(int i=0; i<ClasseMateria.size(); i=i+1){
 			    VotiQuadrimestre=new ArrayList<String>();
-          for(int j=0; j<Studenti.get(i).size(); j=j+1){
-            String EmailStudente=Studenti.get(i).get(j).getEmail();
-            String PasswordStudente=Studenti.get(i).get(j).getPassword();
-            ArrayList<Integer> Id=login.selectIdQuestionari(EmailStudente, PasswordStudente, ClasseMateria.get(i).get(1), "2021-02-05",  new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
-            AppMedia=0;
-            for(int k=0; k<Id.size(); k=k+1){
-              AppMedia=AppMedia+login.selectVotoQuestionario(EmailStudente, PasswordStudente, Id.get(k), ClasseMateria.get(i).get(1), "2021-02-05",  new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
-            }//endfor
-            if(Id.size()!=0) {
-              AppMedia=AppMedia/Id.size();  
-            }//endif
-            VotiQuadrimestre.add(Integer.toString(AppMedia));
-          }//endfor
-          MediaSecondoPeriodo.add(VotiQuadrimestre);
-        }//endfor
+         for(int j=0; j<Studenti.get(i).size(); j=j+1){
+           String EmailStudente=Studenti.get(i).get(j).getEmail();
+           String PasswordStudente=Studenti.get(i).get(j).getPassword();
+           ArrayList<Integer> Id=login.selectIdQuestionari(EmailStudente, PasswordStudente, ClasseMateria.get(i).get(1), "2021-02-05",  new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+           AppMedia=0;
+           for(int k=0; k<Id.size(); k=k+1){
+             AppMedia=AppMedia+login.selectVotoQuestionario(EmailStudente, PasswordStudente, Id.get(k), ClasseMateria.get(i).get(1), "2021-02-05",  new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+           }//endfor
+           if(Id.size()!=0) {
+             AppMedia=AppMedia/Id.size();  
+           }//endif
+           VotiQuadrimestre.add(Integer.toString(AppMedia));
+         }//endfor
+       MediaSecondoPeriodo.add(VotiQuadrimestre);
+     }//endfor
 			  Questionari=login.selectQuestionari(email, password);
 			  InfoUtente=login.selectInfoUtente("Insegnante", email, password);
-			  ListaMaterie=login.selectMaterie();
+			  ListaMaterie=login.selectMaterieInsegnante(email, password);
 			  
 			  Login=true;
 			  
@@ -196,33 +196,35 @@ public class Login extends HttpServlet {
 				
 				//Aggiunta degli attributi alla sessione
 				request.getSession().removeAttribute("Materie");
-        request.getSession().setAttribute("Materie", Materie);
+    request.getSession().setAttribute("Materie", Materie);
 				request.getSession().removeAttribute("MediaGenerale");
-        request.getSession().setAttribute("MediaGenerale", MediaGenerale);
+    request.getSession().setAttribute("MediaGenerale", MediaGenerale);
 				request.getSession().removeAttribute("Media");
 				request.getSession().setAttribute("Media", Media);
 				request.getSession().removeAttribute("DettaglioQuestionario");
 				request.getSession().setAttribute("DettaglioQuestionario", DettaglioQuestionario);
 				request.getSession().removeAttribute("IdQuestionari");
 				request.getSession().setAttribute("IdQuestionari", Id);		
-        request.getSession().removeAttribute("email");
-        request.getSession().setAttribute("email", email);
-        request.getSession().removeAttribute("password");
-        request.getSession().setAttribute("password", password);
-        request.getSession().removeAttribute("TipoUtente");
-        request.getSession().setAttribute("TipoUtente", "Studente");
-        request.getSession().removeAttribute("InfoUtente");
-        request.getSession().setAttribute("InfoUtente", InfoUtente);
-        request.getSession().removeAttribute("idQuestionari");
-        request.getSession().setAttribute("idQuestionari", idQuestionariCalendario);
-        request.getSession().removeAttribute("Login");
-        request.getSession().setAttribute("Login", Login);
+    request.getSession().removeAttribute("email");
+    request.getSession().setAttribute("email", email);
+    request.getSession().removeAttribute("password");
+    request.getSession().setAttribute("password", password);
+    request.getSession().removeAttribute("TipoUtente");
+    request.getSession().setAttribute("TipoUtente", "Studente");
+    request.getSession().removeAttribute("InfoUtente");
+    request.getSession().setAttribute("InfoUtente", InfoUtente);
+    request.getSession().removeAttribute("idQuestionari");
+    request.getSession().setAttribute("idQuestionari", idQuestionariCalendario);
+    request.getSession().removeAttribute("Login");
+    request.getSession().setAttribute("Login", Login);
+    
+    System.out.println(Materie+"\n"+MediaGenerale+"\n"+Media+"\n"+DettaglioQuestionario+"\n"+Id+"\n"+idQuestionariCalendario);
         
 				response.sendRedirect("Studente/Dashboard.jsp");
 			}else{
-				//Errore, utente non trovato
-			  request.getSession().removeAttribute("ErroreLogin");
-        request.getSession().setAttribute("ErroreLogin", true);
+ 			//Errore, utente non trovato
+ 		 request.getSession().removeAttribute("ErroreLogin");
+    request.getSession().setAttribute("ErroreLogin", true);
         
 				response.sendRedirect("Login/Login.jsp");
 			}//endif

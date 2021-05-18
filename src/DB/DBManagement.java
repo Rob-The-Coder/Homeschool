@@ -200,7 +200,7 @@ public class DBManagement {
 
 			//Punteggio massimo questionario, per ogni domanda se il tipo è checkbox somma il punteggio domanda per ogni
 			//RispostaGiusta
-			select="SELECT idDomanda, PunteggioGiusto, TipoDomanda, TestoDomanda FROM Domanda INNER JOIN Questionario ON idfQuestionario=idQuestionario WHERE idQuestionario='" + idQuestionario + "'";
+			select="SELECT idDomanda, PunteggioGiusto, TipoDomanda, TestoDomanda FROM questionario INNER JOIN domanda ON idfQuestionario=idQuestionario INNER JOIN tipodomanda ON idfTipoDomanda=idTIpoDomanda WHERE idQuestionario='" + idQuestionario + "'";
 			float PMax=0;
       Ris=stmt.executeQuery(select);
       while(Ris.next()){
@@ -297,14 +297,12 @@ public class DBManagement {
     try {
       conn = getDBConnection();
       stmt = conn.createStatement();
-      String select = "SELECT DISTINCT NomeMateria, Colore FROM Studente\r\n"
-          + "INNER JOIN dettagliorisposta ON idStudente=idfStudente\r\n"
-          + "INNER JOIN risposta ON idfRisposta=idRisposta\r\n"
-          + "INNER JOIN domanda ON idDomanda=idfDomanda\r\n"
-          + "INNER JOIN questionario ON idQuestionario=idfQuestionario\r\n"
-          + "INNER JOIN materia ON idfMateria=idMateria\r\n"
+      String select = "SELECT NomeMateria, Colore FROM studente\r\n"
+          + "INNER JOIN classe ON Studente.idfClasse=Classe.idClasse\r\n"
+          + "INNER JOIN dettaglioinsegnante ON Classe.idClasse=dettaglioinsegnante.idfClasse\r\n"
+          + "INNER JOIN Materia ON idfMateria=idmateria\r\n"
           + "WHERE Studente.Email LIKE '"+email+"'\r\n"
-          + "AND studente.Password LIKE '"+password+"'";
+          + "AND Studente.Password LIKE '"+password+"'";
       ResultSet Ris = stmt.executeQuery(select);
       Materia.setMateria("%");
       Materie.add(Materia);
@@ -333,7 +331,7 @@ public class DBManagement {
   /****************************************************************/
   // SELECT Materie, Restituisce la lista delle materie
   /****************************************************************/
-  public ArrayList<MateriaBean> selectMaterie() throws SQLException {
+  public ArrayList<MateriaBean> selectMaterieInsegnante(String email, String password) throws SQLException {
     Statement stmt = null;
     Connection conn = null;
     ArrayList<MateriaBean> Materie=new ArrayList<MateriaBean>();
@@ -341,7 +339,10 @@ public class DBManagement {
     try {
       conn = getDBConnection();
       stmt = conn.createStatement();
-      String select = "SELECT NomeMateria FROM Materia";
+      String select = "SELECT DISTINCT NomeMateria FROM Materia\r\n"
+          + "INNER JOIN dettaglioinsegnante ON idfMateria=idMateria\r\n"
+          + "INNER JOIN insegnante ON idfInsegnante=idInsegnante\r\n"
+          + "WHERE Insegnante.Email LIKE '" + email + "' AND Insegnante.Password LIKE '" + password + "'";
       ResultSet Ris = stmt.executeQuery(select);
       while (Ris.next()){
         Materia=new MateriaBean();
@@ -419,15 +420,15 @@ public class DBManagement {
 		try {
 			conn = getDBConnection();
 			stmt = conn.createStatement();
-			String select = "SELECT DISTINCT insegnante.Nome as Nome, insegnante.Cognome as Cognome, NomeClasse, NomeMateria, DataQuestionario FROM insegnante\r\n"
-					+ "INNER JOIN questionario ON idInsegnante=idfInsegnante\r\n"
-					+ "INNER JOIN materia ON idMateria=idfMateria\r\n"
-					+ "INNER JOIN domanda ON idQuestionario=idfQuestionario\r\n"
-					+ "INNER JOIN risposta ON idDomanda=idfDomanda\r\n"
-					+ "INNER JOIN dettagliorisposta ON idfRisposta=idfStudente\r\n"
-					+ "INNER JOIN studente ON idStudente=idfStudente\r\n"
-					+ "INNER JOIN classe ON idClasse=idfClasse\r\n"
-					+ "WHERE Studente.Email LIKE '" + email + "'\r\n"
+			String select = "SELECT DISTINCT insegnante.Nome, insegnante.Cognome, DataQuestionario, NomeMateria, NomeClasse FROM Classe\r\n"
+	    + "INNER JOIN studente ON idfClasse=idClasse\r\n"
+	    + "INNER JOIN dettagliorisposta ON idfStudente=idStudente\r\n"
+	    + "INNER JOIN risposta ON idfRisposta=IdRisposta\r\n"
+	    + "INNER JOIN domanda ON idfDomanda=idDomanda\r\n"
+	    + "INNER JOIN questionario ON idfQuestionario=idQuestionario\r\n"
+	    + "INNER JOIN Materia ON idfMateria=idMateria\r\n"
+	    + "INNER JOIN insegnante ON idfInsegnante=idInsegnante\r\n"
+			  + "WHERE Studente.Email LIKE '" + email + "'\r\n"
 					+ "AND Studente.Password LIKE '" + password + "'"
 					+ "AND idQuestionario='" + idQuestionario + "'";
 			ResultSet Ris = stmt.executeQuery(select);
@@ -468,16 +469,11 @@ public class DBManagement {
 		try {
 			conn = getDBConnection();
 			stmt = conn.createStatement();
-			String select = "SELECT DISTINCT NomeClasse, NomeMateria\r\n"
-					+ "	FROM Insegnante \r\n"
-					+ "	INNER JOIN Questionario ON Questionario.idfInsegnante = Insegnante.idInsegnante\r\n"
-					+ "	INNER JOIN Materia ON idfMateria=idMateria\r\n"
-					+ "	INNER JOIN Domanda ON Questionario.idQuestionario = Domanda.idfQuestionario \r\n"
-					+ "	INNER JOIN Risposta ON Domanda.idDomanda = Risposta.idfDomanda\r\n"
-					+ "	INNER JOIN DettaglioRisposta ON Risposta.idRisposta = DettaglioRisposta.idfRisposta\r\n"
-					+ "	INNER JOIN Studente ON DettaglioRisposta.idfStudente = Studente.idStudente\r\n"
-					+ "	INNER JOIN Classe ON Studente.idfClasse = Classe.idClasse\r\n"
-					+ "	WHERE Insegnante.Email LIKE '" + email + "' AND Insegnante.Password LIKE '" + password + "'";
+			String select = "SELECT DISTINCT NomeClasse, NomeMateria FROM Materia\r\n"
+	    + "INNER JOIN dettaglioinsegnante ON idfMateria=idMateria\r\n"
+	    + "INNER JOIN classe ON idfClasse=idClasse\r\n"
+	    + "INNER JOIN insegnante ON idfInsegnante=idInsegnante\r\n"
+					+ "WHERE Insegnante.Email LIKE '" + email + "' AND Insegnante.Password LIKE '" + password + "'";
 			ResultSet Ris = stmt.executeQuery(select);
 			while (Ris.next()) {
 			  Parziale=new ArrayList<String>();
@@ -698,7 +694,8 @@ public class DBManagement {
 			String select = "SELECT TipoDomanda, PunteggioSbagliato, PunteggioGiusto, PunteggioVuoto,"
 					+ " TestoDomanda, ImmagineDomanda \r\n" + "FROM Questionario \r\n"
 					+ "INNER JOIN Domanda ON Questionario.idQuestionario = Domanda.idfQuestionario\r\n"
-					+ "WHERE Questionario.CodiceAccesso = '" + CodiceAccesso + "'";
+					+ "INNER JOIN TipoDomanda ON idfTipoDomanda=idTipoDomanda\r\n"
+					+ "WHERE Questionario.CodiceAccesso LIKE '" + CodiceAccesso + "'";
 			ResultSet Ris = stmt.executeQuery(select);
 			
 

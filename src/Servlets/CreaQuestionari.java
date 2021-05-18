@@ -161,10 +161,11 @@ public class CreaQuestionari extends HttpServlet {
       String idQuestionario=DB.selectIdInserimentoQuestionario();
       String CodiceAccesso="";
       
+      //codice per ottenere un codice di accesso
       char[] chars="abcdefghijklmnopqrstuvwxyz".toCharArray();
       StringBuffer Code=new StringBuffer();
       String subcode="";
-      for(int j=0; j<2; j=j+1) {
+      for(int j=0; j<2; j=j+1){
         subcode="";
         do{
           int max=10000000;
