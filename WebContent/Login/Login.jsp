@@ -43,6 +43,7 @@ if(request.getSession().getAttribute("ErroreLogin") != null){
                   <button type="submit" class="btn btn-primary w-100">Accedi</button>
                 </div>
               </form>
+              <button type="button" class="btn btn-link p-0" onclick="window.location.href='../Registrazione/Registrazione.jsp'">Non sei registrato? Clicca qui!</button>
               <% if(ErroreLogin){ %>
                 <div class="alert alert-danger alert-dismissible fade show p-2 mb-0" role="alert">
                   Utente non trovato! Controllare le credenziali inserite

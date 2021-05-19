@@ -2,6 +2,7 @@ package DB;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -605,6 +606,135 @@ public class DBManagement {
     }
   }
   /****************************************************************/
+  // SELECT idClasse
+ // RESTITUISCE l'idClasse dato il nome
+  /****************************************************************/
+  public String selectIdClasse(String Classe) throws SQLException {
+    Statement stmt = null;
+    Connection conn = null;
+    String id="";
+    try{
+      conn = getDBConnection();
+      stmt = conn.createStatement();
+      String select = "SELECT idClasse FROM classe\r\n"
+      + "WHERE NomeClasse LIKE '" + Classe + "'";
+      ResultSet Ris = stmt.executeQuery(select);
+      while (Ris.next()) { 
+        id=Ris.getString("idClasse");
+      } // endwhile
+      return id;
+    } catch (SQLException sqle) {
+      System.out.println("SELECT ERROR");
+      throw new SQLException(sqle.getErrorCode() + ":" + sqle.getMessage());
+    } catch (Exception err) {
+      System.out.println("GENERIC ERROR");
+      throw new SQLException(err.getMessage());
+    } finally {
+      if (stmt != null) {
+        stmt.close();
+      }
+      if (conn != null) {
+        conn.close();
+      }
+    }
+  }
+  /****************************************************************/
+  // SELECT last id
+ // RESTITUISCE l'id dell'ultimo id inserito
+  /****************************************************************/
+  public String selectLastId() throws SQLException {
+    Statement stmt = null;
+    Connection conn = null;
+    String id="";
+    try{
+      conn = getDBConnection();
+      stmt = conn.createStatement();
+      String select = "SELECT LAST_INSERT_ID() AS id";
+      ResultSet Ris = stmt.executeQuery(select);
+      while (Ris.next()) { 
+        id=Ris.getString("id");
+      } // endwhile
+      return id;
+    } catch (SQLException sqle) {
+      System.out.println("SELECT ERROR");
+      throw new SQLException(sqle.getErrorCode() + ":" + sqle.getMessage());
+    } catch (Exception err) {
+      System.out.println("GENERIC ERROR");
+      throw new SQLException(err.getMessage());
+    } finally {
+      if (stmt != null) {
+        stmt.close();
+      }
+      if (conn != null) {
+        conn.close();
+      }
+    }
+  }
+  /****************************************************************/
+  // SELECT listaMaterie
+  // RESTITUISCE l'intera lista di materie
+  /****************************************************************/
+  public ArrayList<String> selectListaMaterie() throws SQLException {
+    Statement stmt = null;
+    Connection conn = null;
+    ArrayList<String> Materie=new ArrayList<String>();
+    try{
+      conn = getDBConnection();
+      stmt = conn.createStatement();
+      String select = "SELECT NomeMateria FROM materia";
+      ResultSet Ris = stmt.executeQuery(select);
+      while (Ris.next()) { 
+        Materie.add(Ris.getString("NomeMateria"));
+      } // endwhile
+      return Materie;
+    } catch (SQLException sqle) {
+      System.out.println("SELECT ERROR");
+      throw new SQLException(sqle.getErrorCode() + ":" + sqle.getMessage());
+    } catch (Exception err) {
+      System.out.println("GENERIC ERROR");
+      throw new SQLException(err.getMessage());
+    } finally {
+      if (stmt != null) {
+        stmt.close();
+      }
+      if (conn != null) {
+        conn.close();
+      }
+    }
+  }
+  /****************************************************************/
+  // SELECT lista classi
+  // RESTITUISCE L'intera lista di classi
+  /****************************************************************/
+  public ArrayList<String> selectListaClassi() throws SQLException {
+    Statement stmt = null;
+    Connection conn = null;
+    ArrayList<String> Classi=new ArrayList<String>();
+    try{
+      conn = getDBConnection();
+      stmt = conn.createStatement();
+      String select = "SELECT NomeClasse FROM classe";
+      ResultSet Ris = stmt.executeQuery(select);
+      while (Ris.next()) { 
+        Classi.add(Ris.getString("NomeClasse"));
+      } // endwhile
+      return Classi;
+    } catch (SQLException sqle) {
+      System.out.println("SELECT ERROR");
+      throw new SQLException(sqle.getErrorCode() + ":" + sqle.getMessage());
+    } catch (Exception err) {
+      System.out.println("GENERIC ERROR");
+      throw new SQLException(err.getMessage());
+    } finally {
+      if (stmt != null) {
+        stmt.close();
+      }
+      if (conn != null) {
+        conn.close();
+      }
+    }
+  }
+  /****************************************************************/
   // SELECT IdInsegnante
   // RESTITUISCE L'IDINSEGANTE DATE LA CREDENZIALI DI ACCESSO
   /****************************************************************/
@@ -918,6 +1048,103 @@ public class DBManagement {
       }
     }
   }
+  /****************************************************************/
+  //INSERT Studente, permette l'inserimento nella tabella
+  // "studente"
+  /****************************************************************/
+ public void insertStudente(String NomeClasse, String Nome, String Cognome, String Email, String Password, String Città, String DataNascita) throws SQLException{
+   Statement stmt = null;
+    Connection conn = null;
+    
+    try{
+      conn = getDBConnection();
+      conn.setAutoCommit(false);
+      stmt = conn.createStatement();
+      
+      String idClasse=selectIdClasse(NomeClasse);
+      
+      String insert = "INSERT INTO studente(idfClasse, Nome, Cognome, Città, Email, Password, DataNascita)\r\n"
+      + "VALUES('"+idClasse+"', '"+Nome+"', '"+Cognome+"', '"+Città+"', '"+Email+"', '"+Password+"', '"+DataNascita+"')";
+      
+      stmt.executeUpdate(insert);
+      conn.commit();
+    }catch(SQLException sqle){
+      if (conn != null) {
+        conn.rollback();
+      }//endif
+      System.out.println("INSERT ERROR: Transaction is being rolled back");
+      throw new SQLException(sqle.getErrorCode() + ":" + sqle.getMessage());
+    }catch(Exception err){
+      if (conn != null){
+        conn.rollback();
+      }//endif
+      System.out.println("GENERIC ERROR: Transaction is being rolled back");
+      throw new SQLException(err.getMessage());
+    }finally{
+      if (stmt != null){
+        stmt.close();
+      }//endif
+      if (conn != null){
+        conn.close();
+      }//endif
+    }//endtry
+ }
+ /****************************************************************/
+ //INSERT insegnante, permette l'inserimento nella tabella
+ // "insegnante"
+ /****************************************************************/
+public void insertInsegnante(ArrayList<String> Classi, ArrayList<String> Materie, String Nome, String Cognome, String Email, String Password, String Città, String DataNascita) throws SQLException{
+  PreparedStatement stmt=null;
+  Connection conn=null;
+   
+   try{
+     conn = getDBConnection();
+     conn.setAutoCommit(false);
+     
+     stmt=conn.prepareStatement("INSERT INTO insegnante(Nome, Cognome, Città, Email, Password, DataNascita) VALUES(?, ?, ?, ?, ?, ?)");
+     stmt.setString(1, Nome);
+     stmt.setString(2, Cognome);
+     stmt.setString(3, Città);
+     stmt.setString(4, Email);
+     stmt.setString(5, Password);
+     stmt.setString(6, DataNascita);
+     int idfInsegnante=stmt.executeUpdate();
+     
+     System.out.println(idfInsegnante);
+     
+     for(int i=0; i<Classi.size(); i=i+1){
+       String idfClasse=selectIdClasse(Classi.get(i));
+       String idfMateria=selectIdMateria(Materie.get(i));
+       
+       stmt=conn.prepareStatement("INSERT INTO dettaglioinsegnante(idfInsegnante, idfClasse, idfMateria) VALUES(?, ?, ?)");
+       stmt.setInt(1, idfInsegnante);
+       stmt.setString(2, idfClasse);
+       stmt.setString(3, idfMateria);
+       int dett=stmt.executeUpdate();
+     }//endfor
+     
+     conn.commit();
+   }catch(SQLException sqle){
+     if (conn != null) {
+       conn.rollback();
+     }//endif
+     System.out.println("INSERT ERROR: Transaction is being rolled back");
+     throw new SQLException(sqle.getErrorCode() + ":" + sqle.getMessage());
+   }catch(Exception err){
+     if (conn != null){
+       conn.rollback();
+     }//endif
+     System.out.println("GENERIC ERROR: Transaction is being rolled back");
+     throw new SQLException(err.getMessage());
+   }finally{
+     if (stmt != null){
+       stmt.close();
+     }//endif
+     if (conn != null){
+       conn.close();
+     }//endif
+   }//endtry
+}
 	/****************************************************************/
   //INSERT Questionario, permette l'inserimento nella tabella
 	// "Questionario"
