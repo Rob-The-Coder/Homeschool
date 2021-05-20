@@ -639,38 +639,6 @@ public class DBManagement {
     }
   }
   /****************************************************************/
-  // SELECT last id
- // RESTITUISCE l'id dell'ultimo id inserito
-  /****************************************************************/
-  public String selectLastId() throws SQLException {
-    Statement stmt = null;
-    Connection conn = null;
-    String id="";
-    try{
-      conn = getDBConnection();
-      stmt = conn.createStatement();
-      String select = "SELECT LAST_INSERT_ID() AS id";
-      ResultSet Ris = stmt.executeQuery(select);
-      while (Ris.next()) { 
-        id=Ris.getString("id");
-      } // endwhile
-      return id;
-    } catch (SQLException sqle) {
-      System.out.println("SELECT ERROR");
-      throw new SQLException(sqle.getErrorCode() + ":" + sqle.getMessage());
-    } catch (Exception err) {
-      System.out.println("GENERIC ERROR");
-      throw new SQLException(err.getMessage());
-    } finally {
-      if (stmt != null) {
-        stmt.close();
-      }
-      if (conn != null) {
-        conn.close();
-      }
-    }
-  }
-  /****************************************************************/
   // SELECT listaMaterie
   // RESTITUISCE l'intera lista di materie
   /****************************************************************/
@@ -1100,27 +1068,29 @@ public void insertInsegnante(ArrayList<String> Classi, ArrayList<String> Materie
    try{
      conn = getDBConnection();
      conn.setAutoCommit(false);
+     stmt=conn.prepareStatement("INSERT INTO insegnante(Nome, Cognome, Città, Email, Password, DataNascita) VALUES(?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
      
-     stmt=conn.prepareStatement("INSERT INTO insegnante(Nome, Cognome, Città, Email, Password, DataNascita) VALUES(?, ?, ?, ?, ?, ?)");
      stmt.setString(1, Nome);
      stmt.setString(2, Cognome);
      stmt.setString(3, Città);
      stmt.setString(4, Email);
      stmt.setString(5, Password);
      stmt.setString(6, DataNascita);
-     int idfInsegnante=stmt.executeUpdate();
      
-     System.out.println(idfInsegnante);
+     int affectedrows=stmt.executeUpdate();
+     int idfInsegnante=0;
+     ResultSet generatedKeys = stmt.getGeneratedKeys();
+	 if(generatedKeys.next()){
+       idfInsegnante=(int)generatedKeys.getLong(1);
+	   System.out.println(idfInsegnante);
+	 }//endif
      
      for(int i=0; i<Classi.size(); i=i+1){
        String idfClasse=selectIdClasse(Classi.get(i));
        String idfMateria=selectIdMateria(Materie.get(i));
        
-       stmt=conn.prepareStatement("INSERT INTO dettaglioinsegnante(idfInsegnante, idfClasse, idfMateria) VALUES(?, ?, ?)");
-       stmt.setInt(1, idfInsegnante);
-       stmt.setString(2, idfClasse);
-       stmt.setString(3, idfMateria);
-       int dett=stmt.executeUpdate();
+       String insert="INSERT INTO dettaglioinsegnante(idfInsegnante, idfClasse, idfMateria) VALUES('"+idfInsegnante+"', '"+idfClasse+"', '"+idfMateria+"')";
+       int dett=stmt.executeUpdate(insert);
      }//endfor
      
      conn.commit();
@@ -1145,6 +1115,49 @@ public void insertInsegnante(ArrayList<String> Classi, ArrayList<String> Materie
      }//endif
    }//endtry
 }
+	/****************************************************************/
+	//INSERT insegnante, permette l'inserimento nella tabella
+	// "insegnante"
+	/****************************************************************/
+	public void insertIns(ArrayList<String> Classi, ArrayList<String> Materie, String Nome, String Cognome, String Email, String Password, String Città, String DataNascita) throws SQLException{
+	 PreparedStatement stmt=null;
+	 Connection conn=null;
+	  
+	  try{
+	    conn = getDBConnection();
+	    conn.setAutoCommit(false);
+	    
+	    stmt=conn.prepareStatement("INSERT INTO insegnante(Nome, Cognome, Città, Email, Password, DataNascita) VALUES(?, ?, ?, ?, ?, ?)");
+	    stmt.setString(1, Nome);
+	    stmt.setString(2, Cognome);
+	    stmt.setString(3, Città);
+	    stmt.setString(4, Email);
+	    stmt.setString(5, Password);
+	    stmt.setString(6, DataNascita);
+	    int idfInsegnante=stmt.executeUpdate();
+	    
+	    conn.commit();
+	  }catch(SQLException sqle){
+	    if (conn != null) {
+	      conn.rollback();
+	    }//endif
+	    System.out.println("INSERT ERROR: Transaction is being rolled back");
+	    throw new SQLException(sqle.getErrorCode() + ":" + sqle.getMessage());
+	  }catch(Exception err){
+	    if (conn != null){
+	      conn.rollback();
+	    }//endif
+	    System.out.println("GENERIC ERROR: Transaction is being rolled back");
+	    throw new SQLException(err.getMessage());
+	  }finally{
+	    if (stmt != null){
+	      stmt.close();
+	    }//endif
+	    if (conn != null){
+	      conn.close();
+	    }//endif
+	  }//endtry
+	}
 	/****************************************************************/
   //INSERT Questionario, permette l'inserimento nella tabella
 	// "Questionario"
